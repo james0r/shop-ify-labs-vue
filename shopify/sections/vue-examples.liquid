@@ -62,7 +62,7 @@
             </div>
 
             <div>
-              Vuex “my-module” state “visible” is set to <strong>{% raw %}{{ visible }}{% endraw %}</strong>
+              Vuex “store” state “visible” is set to <strong>{% raw %}{{ visible }}{% endraw %}</strong>
             </div>
 
             <button @click="toggle" class="shopify-theme-lab__button">
@@ -75,19 +75,19 @@
           Mouse is at: {% raw %}{{ x }}{% endraw %}, {% raw %}{{ y }}{% endraw %}
         </renderless-mouse-tracker>
 
-        <!-- vuex module: src/vue/store/my-module.js -->
+        <!-- vuex module: src/vue/store/index.js -->
         <div>
           <div class="shopify-theme-lab__subline">
             Vuex anywhere!
           </div>
 
           <div>
-            Vuex “my-module” state “visible” is set to <strong>{% raw %}{{ $store.state['my-module'].visible }}{% endraw %}</strong>
+            Vuex “store” state “visible” is set to <strong>{% raw %}{{ $store.state.visible }}{% endraw %}</strong>
           </div>
 
           <button
             class="shopify-theme-lab__button"
-            @click="$store.dispatch('my-module/toggle')"
+            @click="$store.dispatch('toggle')"
           >
             Click me, too!
           </button>

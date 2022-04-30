@@ -3,26 +3,9 @@
  */
 import { createApp } from 'vue'
 import { createStore } from 'vuex'
+import { store } from './vue/store/index'
 import './css/main.css'
 import './scss/main.scss'
-import 'liquid-ajax-cart';
-
-/**
- * vuex
- * auto-import all modules and prepare shared store
- */
-const vuexModules = require.context('./vue/store/', true, /\.js$/)
-const modules = {}
-
-vuexModules.keys().forEach(key => {
-  const name = key.replace(/\.(\/|js)/g, '').replace(/\s/g, '-')
-  modules[name] = vuexModules(key).default
-})
-
-const store = createStore({
-  strict: process.env.NODE_ENV !== 'production',
-  modules
-})
 
 /**
  * create vue instance function

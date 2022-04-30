@@ -7,9 +7,9 @@ export default {
     const store = useStore()
 
     return () => slots.default({
-      visible: computed(() => store.state['my-module'].visible).value,
-      toggle: () => store.dispatch('my-module/toggle')
+      visible: computed(() => store.state.visible).value,
+      toggle: () => store.dispatch('toggle')
     })
   }
-}
+} 
 </script>
