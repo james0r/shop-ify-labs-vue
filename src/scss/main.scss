@@ -1,0 +1,21 @@
+html {
+
+  body {
+    position: relative;
+
+    &:before {
+      content: "";
+      display: block;
+      background-image: url(https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Sass_Logo_Color.svg/1024px-Sass_Logo_Color.svg.png?20150315202757);
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+      height: 100vh;
+      width: 100vw;
+      position: absolute;
+      z-index: -1;
+      top: 0;
+      opacity: .2;
+    }
+  }
+}

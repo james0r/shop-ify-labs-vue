@@ -1,0 +1,130 @@
+<div class="container">
+  <div class="shopify-theme-lab">
+    <hr>
+      <div>
+        Items in cart: 
+        <span data-ajax-cart-bind-state="cart.item_count" >
+          {{ cart.item_count }}
+        </span>
+      </div>
+      
+      <div>
+        Cart Total: 
+        <span data-ajax-cart-bind-state="cart.total_price | money_with_currency">
+          {{ cart.total_price | money_with_currency }}
+        </span>
+      </div>
+    <hr>
+
+    <table style="width: 100%;">
+      <tr>
+        <th style="text-align: left;">Title</th>
+        <th style="text-align: left;">Price</th>
+        <th style="text-align: left;">Action</th>
+      </tr>
+      {% for product in collections['all'].products %}
+        {% if forloop.index0 < 10 %}
+          <tr>
+            <td>{{ product.title }}</td>
+            <td>{{ product.price | money }}</td>
+            <td>
+              {% form 'product', product %}
+                <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                <input type="submit" value="Add to cart" style="cursor: pointer; color: blue;">
+                <div data-ajax-cart-messages="form" > 
+                  <!-- Errors and messages appear here --> 
+                </div>
+              {% endform %}
+            </td>
+          </tr>
+        {% endif %}
+      {% endfor %}
+    </table>
+  </div>
+</div>
+
+<style>
+form.js-ajax-cart-form-in-progress [type="submit"] {
+  opacity: .2;  
+}
+
+form.js-ajax-cart-form-in-progress:after { 
+  content: 'Adding to cart…';
+  display: block; 
+}
+</style>
+
+<form action="{{ routes.cart_url }}" method="post" class="my-cart container">
+  <!-- data-ajax-cart-section makes the element's HTML update
+  when the cart gets changed -->
+  <div data-ajax-cart-section class="shopify-theme-lab">
+    <h2>Cart</h2>
+    
+    <!-- data-ajax-cart-section-scroll keeps the scroll position unchanged
+    when the element's HTML is changed -->
+    <div class="my-cart__items" data-ajax-cart-section-scroll>
+      {% for item in cart.items %}
+        {% assign item_index = forloop.index %}
+        <hr />  
+        <div><a href="{{ item.url }}">{{ item.title }}</a></div>
+
+        {% for property in item.properties %}
+          <div>
+            {{ property.first }}:
+            {% if property.first == 'Engraving' %}
+              <!-- data-ajax-cart-property-input ajaxifies the line item property input -->
+              <input type="text"
+                value="{{ property.last }}" 
+                data-ajax-cart-property-input="{{ item_index }}[{{ property.first }}]"/>
+              {% else %}
+                {{ property.last }}
+              {% endif %}
+          </div>
+        {% endfor %}
+
+        <div>Price: {{ item.final_price | money }}</div>
+
+        <div>
+          Quantity:
+          <!-- data-ajax-cart-request-button ajaxifies the "Minus one" button -->
+          <a data-ajax-cart-request-button
+            href="{{ routes.cart_change_url }}?line={{ item_index }}&quantity={{ item.quantity | minus: 1 }}" > 
+            Minus one 
+          </a>
+
+          <!-- data-ajax-cart-quantity-input ajaxifies the line item quantity input -->
+          <input data-ajax-cart-quantity-input="{{ item_index }}"
+            name="updates[]" 
+            value="{{ item.quantity }}" 
+            type="number" />
+
+          <!-- data-ajax-cart-request-button ajaxifies the "Plus one" button -->
+          <a data-ajax-cart-request-button 
+            href="{{ routes.cart_change_url }}?line={{ item_index }}&quantity={{ item.quantity | plus: 1 }}"> 
+            Plus one 
+          </a>
+        </div>
+
+        <!-- Container for errors -->
+        <div data-ajax-cart-messages="{{ item.key }}"></div>
+
+        <div>Total: <strong>{{ item.final_line_price | money }}</strong></div>
+      {% endfor %}
+    </div>
+
+    <!-- data-ajax-cart-property-input ajaxifies the cart note textarea -->
+    <textarea data-ajax-cart-property-input
+      name="note" 
+      placeholder="Cart note">
+      {{ cart.note }}
+    </textarea>
+    
+    <!-- data-ajax-cart-static-element keeps the container unchanged
+    when the cart and the surrounding HTML get updated -->
+    <div data-ajax-cart-static-element class="my-cart__app-container"></div>
+
+    <button type="submit" name="checkout">
+      Checkout — {{ cart.total_price | money_with_currency }}
+    </button> 
+  </div>
+</form>
